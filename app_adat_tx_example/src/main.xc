@@ -6,12 +6,15 @@
 // Example code for ADAT. Note that the adat_tx code can be changed to drive a port
 // directly
 
+#include <xs1.h>
+#include <xclib.h>
+#include "adat_tx.h"
 
-buffered out port:32 adat_port;
-in port mck;
-clock mck_blk;
+buffered out port:32 adat_port = XS1_PORT_1P;
+in port mck = XS1_PORT_1O;
+clock mck_blk = XS1_CLKBLK_2;
 
-generateData(chanend c_data) {
+void generateData(chanend c_data) {
     outuint(c_data, 512);  // master clock multiplier (1024, 256, or 512)
     outuint(c_data, 0);  // SMUX flag (0, 2, or 4)
     for (int i = 0; i < 1000; i++) {
@@ -36,4 +39,5 @@ int main(void) {
         adat_tx(c_data, c_port);
         drivePort(c_port);
     }
+    return 0;
 }
