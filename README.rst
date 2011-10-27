@@ -15,14 +15,13 @@ Key Features
 
 * 48000 and 44100 ADAT receivers
 * 48000 and 44100 ADAT transmitters
+* Application for loopback testing on Simulator or HW
 
 To Do
 =====
 
 * There is no out of the box version for non 100 Mhz reference clocks.
-* The transmit thread is designed to send the data to another thread for
-  outputting to a port. It is a trivial change to directly output to a port
-  instead.
+
 
 Firmware Overview
 =================
