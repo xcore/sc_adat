@@ -31,4 +31,4 @@
         }
   why byte reverse? mixing word and byte channel outputs and channels are big endian
 */ 
-void adat_tx(chanend c_data, chanend c_port);
+void adat_tx(chanend c_data, buffered out port:32 p_data);
