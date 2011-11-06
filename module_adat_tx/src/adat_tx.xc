@@ -279,6 +279,7 @@ void adat_transmit_until_ct_2x(chanend c_data, buffered out port:32 p_data, int 
 
       p_data <: (next_lookup << 20) | (last_lookup & 0xFFFFF);
       partout(p_data, 8, (next_lookup >> 12));
+      last_lookup = next_lookup;
 
       if (last_lookup & 0x80000)
         last_lookup = ~lookup20[(w[i + 1] >> 16) & 0xFF];
@@ -304,6 +305,8 @@ void adat_transmit_until_ct_1x(chanend c_data, buffered out port:32 p_data, int 
 
 void adat_tx(chanend c_data, buffered out port:32 p_data)
 {
+  set_thread_fast_mode_on();
+
   while (1) {
     int multiplier = inuint(c_data);
     int smux = inuint(c_data);
