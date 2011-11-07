@@ -6,6 +6,8 @@
 // history:
 // 08 Jun 2010   forked from swc_usb/module_usb_audio_shared/src/adat_tx.xc tag ADAT_FORK
 
+
+
 #include <platform.h>
 #include <xclib.h>
 #include <print.h>
@@ -108,7 +110,7 @@ static unsigned lookup20[256] = {
 #define outuintb(c, x) outuint(c, byterev(x))
 
 #pragma unsafe arrays
-void adat_transmit_until_ct_4x(chanend c_data, chanend c_port, int smux)
+void adat_transmit_until_ct_4x(chanend c_data, buffered out port:32 p_data, int smux)
 {
   // note: byte reverse is necessary in order to output 40 bits as unint+uchar (rather than 5 uchars)
   unsigned last_lookup = 0;
@@ -138,13 +140,13 @@ void adat_transmit_until_ct_4x(chanend c_data, chanend c_port, int smux)
                uuuu
     */
     if (last_lookup & 0x80) {
-      outuintb(c_port, ~0);
-      outuintb(c_port, ~start);
+      p_data <: ~0;
+      p_data <: ~start;
       last_lookup = ((~start >> 31) & 1) << 7;
     }
     else {
-      outuintb(c_port, 0);
-      outuintb(c_port, start);
+      p_data <: 0;
+      p_data <: start;
       last_lookup = ((start >> 31) & 1) << 7;
     }
 
@@ -160,14 +162,19 @@ void adat_transmit_until_ct_4x(chanend c_data, chanend c_port, int smux)
 #pragma loop unroll(3)
       for (int j = 24; j >= 8; j -= 8) {
         if (last_lookup & 0x80) {
-          outuint(c_port, ~lookup40w[(w[i] >> j) & 0xFF]);
+        	// used to be:
+            //outuint(c_port, ~lookup40w[(w[i] >> j) & 0xFF]);
+            //last_lookup = ~lookup40b[(w[i] >> j) & 0xFF];
+            //outuchar(c_port, last_lookup);
+
+          p_data <: byterev(~lookup40w[(w[i] >> j) & 0xFF]);
           last_lookup = ~lookup40b[(w[i] >> j) & 0xFF];
-          outuchar(c_port, last_lookup);
+          partout(p_data, 8, last_lookup);
         }
         else {
-          outuint(c_port, lookup40w[(w[i] >> j) & 0xFF]);
+          p_data <: byterev(lookup40w[(w[i] >> j) & 0xFF]);
           last_lookup = lookup40b[(w[i] >> j) & 0xFF];
-          outuchar(c_port, last_lookup);
+          partout(p_data, 8, last_lookup);
         }
       }
     }
@@ -177,16 +184,17 @@ void adat_transmit_until_ct_4x(chanend c_data, chanend c_port, int smux)
 extern const int sinewave[100];
 
 #pragma unsafe arrays
-void adat_transmit_until_ct_2x(chanend c_data, chanend c_port, int smux)
+void adat_transmit_until_ct_2x(chanend c_data, buffered out port:32 p_data, int smux)
 {
 #ifdef ADAT_TX_SINEWAVE
   int sinewave_i = 0;
 #endif
   unsigned last_lookup = 0;
   unsigned start;
+  unsigned tmp;
   switch (smux)
   {
-    case 0: start = 0b00111111111100000000000000000000; break;
+    case 0: start = 0b00111111111100000000000000000000; break; // 3ff00000
     case 2: start = 0b11000000111100000000000000000000; break;
     case 4: break; // TODO
   }
@@ -217,11 +225,11 @@ void adat_transmit_until_ct_2x(chanend c_data, chanend c_port, int smux)
                        uuuu
     */
     if (last_lookup & 0x80000) {
-      outuintb(c_port, ~start);
+      p_data <: ~start;
       last_lookup = ((~start >> 31) & 1) << 19;
     }
     else {
-      outuintb(c_port, start);
+      p_data <: start;
       last_lookup = ((start >> 31) & 1) << 19;
     }
 
@@ -232,7 +240,7 @@ void adat_transmit_until_ct_2x(chanend c_data, chanend c_port, int smux)
         if (testct(c_data)) {
           return;
         }
-	w[i] = inuint(c_data);
+	    w[i] = inuint(c_data);
         w[i + 1] = inuint(c_data);
 #ifdef ADAT_TX_SINEWAVE
 	w[i] = 0;
@@ -248,8 +256,16 @@ void adat_transmit_until_ct_2x(chanend c_data, chanend c_port, int smux)
         next_lookup = ~lookup20[(w[i] >> 16) & 0xFF];
       else
         next_lookup = lookup20[(w[i] >> 16) & 0xFF];
-      outuintb(c_port, (next_lookup << 20) | (last_lookup & 0xFFFFF));
-      outuchar(c_port, next_lookup >> 12);
+
+      // used to be:
+      //outuintb(c_port, (next_lookup << 20) | (last_lookup & 0xFFFFF));
+      //outuchar(c_port, next_lookup >> 12);
+
+      //tmp = (next_lookup << 20) | (last_lookup & 0xFFFFF);
+      p_data <: (next_lookup << 20) | (last_lookup & 0xFFFFF);
+      partout(p_data, 8, (next_lookup >> 12));
+      // Note: This is what's achieved by outuchar(c_port, next_lookup >> 12); in the original impl
+      // I.e. outuchar manages to push 8 bit into the bottom of the output word
       last_lookup = next_lookup;
 
       if (last_lookup & 0x80000)
@@ -260,8 +276,9 @@ void adat_transmit_until_ct_2x(chanend c_data, chanend c_port, int smux)
         next_lookup = ~lookup20[(w[i + 1] >> 24) & 0xFF];
       else
         next_lookup = lookup20[(w[i + 1] >> 24) & 0xFF];
-      outuintb(c_port, (next_lookup << 20) | (last_lookup & 0xFFFFF));
-      outuchar(c_port, next_lookup >> 12);
+
+      p_data <: (next_lookup << 20) | (last_lookup & 0xFFFFF);
+      partout(p_data, 8, (next_lookup >> 12));
       last_lookup = next_lookup;
 
       if (last_lookup & 0x80000)
@@ -272,21 +289,24 @@ void adat_transmit_until_ct_2x(chanend c_data, chanend c_port, int smux)
         next_lookup = ~lookup20[(w[i + 1] >> 8) & 0xFF];
       else
         next_lookup = lookup20[(w[i + 1] >> 8) & 0xFF];
-      outuintb(c_port, (next_lookup << 20) | (last_lookup & 0xFFFFF));
-      outuchar(c_port, next_lookup >> 12);
+
+      p_data <: (next_lookup << 20) | (last_lookup & 0xFFFFF);
+      partout(p_data, 8, (next_lookup >> 12));
       last_lookup = next_lookup;
     }
   }
 }
 
 #pragma unsafe arrays
-void adat_transmit_until_ct_1x(chanend c_data, chanend c_port, int smux)
+void adat_transmit_until_ct_1x(chanend c_data, buffered out port:32 p_data, int smux)
 {
   // TODO
 }
 
-void adat_tx(chanend c_data, chanend c_port)
+void adat_tx(chanend c_data, buffered out port:32 p_data)
 {
+  set_thread_fast_mode_on();
+
   while (1) {
     int multiplier = inuint(c_data);
     int smux = inuint(c_data);
@@ -296,15 +316,15 @@ void adat_tx(chanend c_data, chanend c_port)
     for (int i = 0; i < 8; i++) {
       inuint(c_data);
     }
-    outuint(c_port, 0);
-    outuint(c_port, 0);
-    outuint(c_port, 0);
-    outuint(c_port, 0);
+    p_data <: byterev(0);
+    p_data <: byterev(0);
+    p_data <: byterev(0);
+    p_data <: byterev(0);
 
     switch (multiplier) {
-      case 1024: adat_transmit_until_ct_4x(c_data, c_port, smux); break;
-      case 512: adat_transmit_until_ct_2x(c_data, c_port, smux); break;
-      case 256: adat_transmit_until_ct_1x(c_data, c_port, smux); break;
+      case 1024: adat_transmit_until_ct_4x(c_data, p_data, smux); break;
+      case 512: adat_transmit_until_ct_2x(c_data, p_data, smux); break;
+      case 256: adat_transmit_until_ct_1x(c_data, p_data, smux); break;
     }
 
     chkct(c_data, XS1_CT_END);
