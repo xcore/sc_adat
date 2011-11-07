@@ -1,0 +1,24 @@
+<Xvcd zoomFactor="1.066920e+03" hScrollPos="635" vScrollPos="0" markerBarPos="1.705717e+06">
+    <Signals>
+        <Signal name="stdcore[0]_XS1_PORT_32A" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_32A_inuse" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_32A_tWaiting" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_32A_direction" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1A" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1A_inuse" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1A_tWaiting" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1A_direction" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1B" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1B_inuse" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1B_tWaiting" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1B_direction" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1C" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1C_inuse" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1C_tWaiting" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1C_direction" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1D" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1D_inuse" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1D_tWaiting" alias="" radix="HEX"/>
+        <Signal name="stdcore[0]_XS1_PORT_1D_direction" alias="" radix="HEX"/>
+    </Signals>
+</Xvcd>
