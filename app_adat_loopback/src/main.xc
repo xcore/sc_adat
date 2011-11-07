@@ -17,7 +17,8 @@
 #define TRACE
 
 #define MAX_GEN_VAL (1<<24)
-
+#define COUNT_SHIFT 5
+#define DONE_CONDITION_MASK ~((1<<COUNT_SHIFT)-1)
 
 buffered out port:32 p_adat_tx = XS1_PORT_1A;
 buffered in port:32 p_adat_rx = XS1_PORT_1B;
@@ -50,7 +51,8 @@ void receiveAdat(chanend c) {
 void collectSamples(chanend c) {
     unsigned expected_data=8;
     unsigned count=8; // first 8 data are thrown away by adat_tx (expected_data is calc from count)
-    while(expected_data < MAX_GEN_VAL-1) {
+
+    while(expected_data < ((MAX_GEN_VAL-1)&DONE_CONDITION_MASK)) { // mask lower bits. data gen algo won't reach (MAX_GEN_VAL-1)
         unsigned head, channels[8];
         head = inuint(c);                    // This will be a header nibble in bits 7..4 and 0001 in the bottom 4 bits
         trace_data <: head;
@@ -61,7 +63,7 @@ void collectSamples(chanend c) {
             trace_data <: channels[i];
 #endif
 
-            expected_data = expected_data + (1<<(count>>5));
+            expected_data = expected_data + (1<<(count>>COUNT_SHIFT));
 
             if(channels[i] != expected_data << 8) {
                 printf("Error: Received data 0x%x differs from expected data 0x%x. Correctly received so far %d\n", channels[i], expected_data << 8, count-7);
@@ -72,6 +74,7 @@ void collectSamples(chanend c) {
         }
     }
     printf("Loopback tests PASS. Received %d samples as expected\n", count);
+    printf("\n");
 
 
 }
@@ -91,13 +94,20 @@ void generateData(chanend c_data) {
     outuint(c_data, 512);  // master clock multiplier (1024, 256, or 512)
     outuint(c_data, 0);  // SMUX flag (0, 2, or 4)
 
-    while(data <= MAX_GEN_VAL) {
-        data = data + (1<<(count>>5)); // add increasing values to data
+    while(1) {
+        data = data + (1<<(count>>COUNT_SHIFT)); // add increasing values to data
 
+        if(data > MAX_GEN_VAL) {
+            break;
+        }
         outuint(c_data, data << 8);    // left aligned data (only 24 bits will be used)
 
         count++;
-    }
+    };
+
+    // give receiver some time
+    tmr :> time;
+    tmr when timerafter(time+4000) :> void;
 
     printf("Finished sending %d words\n", count);
 
