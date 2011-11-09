@@ -9,10 +9,7 @@
 #include <platform.h>
 #include <xclib.h>
 #include <print.h>
-
-extern unsigned int  lookup40w[256];
-extern unsigned char lookup40b[256];
-extern unsigned      lookup20[256];
+#include "adat_lookups.h"
 
 #define outuintb(c, x) outuint(c, byterev(x))
 

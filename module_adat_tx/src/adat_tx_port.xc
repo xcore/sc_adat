@@ -6,15 +6,10 @@
 // history:
 // 08 Jun 2010   forked from swc_usb/module_usb_audio_shared/src/adat_tx_port.xc tag ADAT_FORK
 
-
-
 #include <platform.h>
 #include <xclib.h>
 #include <print.h>
-
-extern unsigned int  lookup40w[256];
-extern unsigned char lookup40b[256];
-extern unsigned      lookup20[256];
+#include "adat_lookups.h"
 
 #pragma unsafe arrays
 void adat_transmit_port_until_ct_4x(chanend c_data, buffered out port:32 p_data, int smux)
@@ -98,7 +93,6 @@ void adat_transmit_port_until_ct_2x(chanend c_data, buffered out port:32 p_data,
 #endif
   unsigned last_lookup = 0;
   unsigned start;
-  unsigned tmp;
   switch (smux)
   {
     case 0: start = 0b00111111111100000000000000000000; break; // 3ff00000

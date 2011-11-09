@@ -8,7 +8,7 @@ TARGET = XK-1
 # not include the .xe postfix. If left blank the name will default to 
 # the project name
 
-APP_NAME = app_adat_tx_example
+APP_NAME =
 
 # The flags passed to xcc when building the application
 # You can also set the following to override flags for a particular language:
@@ -31,14 +31,3 @@ USED_MODULES = module_adat_tx
 
 # Use the main Makefile from module_xmos_common
 include ../../xcommon/module_xcommon/build/Makefile.common
-
-# The final target of the build. This is usually dependent on a binary file
-# in the $(BIN_DIR) directory e.g.
-#
-#  all : $(BIN_DIR)/my_app.xe
-
-all: $(BIN_DIR)/$(APP_NAME).xe
-	@echo Build Complete
-
-
-clean: clean_common
