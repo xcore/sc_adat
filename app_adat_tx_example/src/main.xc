@@ -8,7 +8,11 @@
 
 #include <xs1.h>
 #include <xclib.h>
+#include <print.h>
 #include "adat_tx.h"
+
+//#define ADAT_TX_DIRECT_PORT_OUT
+#define XSIM
 
 buffered out port:32 adat_port = XS1_PORT_1P;
 in port mck = XS1_PORT_1O;
@@ -20,13 +24,27 @@ void generateData(chanend c_data) {
 	for (int i = 0; i < 1000; i++) {
 		outuint(c_data, i);   // left aligned data (only 24 bits will be used)
 	}
+	printstrln("Finished transmitting data");
+
 	outct(c_data, XS1_CT_END);
+
 }
+
+void setupClocks() {
+
+#ifndef XSIM
+    set_clock_src(mck_blk, mck);
+    set_clock_fall_delay(mck_blk, 7);   // XAI2 board, set to appropriate value for board.
+#else
+    configure_clock_rate(mck_blk, 100, 4); // 25 MHz clock
+#endif
+
+    set_port_clock(adat_port, mck_blk);
+    start_clock(mck_blk);
+}
+
 void drivePort(chanend c_port) {
-	set_clock_src(mck_blk, mck);
-	set_port_clock(adat_port, mck_blk);
-	set_clock_fall_delay(mck_blk, 7);   // XAI2 board, set to appropriate value for board.
-	start_clock(mck_blk);
+    setupClocks();
 	while (1) {
 		adat_port <: byterev(inuint(c_port));
 	}
@@ -34,15 +52,22 @@ void drivePort(chanend c_port) {
 
 int main(void) {
 	chan c_data;
+
+#ifndef ADAT_TX_DIRECT_PORT_OUT
+    chan c_port;
+#endif
+
 	par {
 		generateData(c_data);
+#ifdef ADAT_TX_DIRECT_PORT_OUT
 		{
-			set_clock_src(mck_blk, mck);
-			set_port_clock(adat_port, mck_blk);
-			set_clock_fall_delay(mck_blk, 7);   // XAI2 board, set to appropriate value for board.
-			start_clock(mck_blk);
+            setupClocks();
 			adat_tx(c_data, adat_port);
 		}
+#else
+        adat_tx(c_data, c_port);
+        drivePort(c_port);
+#endif
 	}
 	return 0;
 }
