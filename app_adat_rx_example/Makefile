@@ -18,7 +18,7 @@ APP_NAME = app_adat_rx_example
 # If the variable XCC_MAP_FLAGS is set it overrides the flags passed to 
 # xcc for the final link (mapping) stage.
 
-XCC_FLAGS = -O3
+XCC_FLAGS = -O3 -g
 
 # The USED_MODULES variable lists other module used by the application. 
 

@@ -8,7 +8,7 @@ TARGET = XK-1
 # not include the .xe postfix. If left blank the name will default to 
 # the project name
 
-APP_NAME = app_adat_tx_example
+APP_NAME = app_adat_loopback
 
 # The flags passed to xcc when building the application
 # You can also set the following to override flags for a particular language:
@@ -22,7 +22,7 @@ XCC_FLAGS = -O3 -g
 
 # The USED_MODULES variable lists other module used by the application. 
 
-USED_MODULES = module_adat_tx
+USED_MODULES = sc_adat/module_adat_tx sc_adat/module_adat_rx
 
 #=============================================================================
 # The following part of the Makefile includes the common build infrastructure
