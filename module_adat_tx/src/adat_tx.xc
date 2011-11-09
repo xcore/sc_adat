@@ -10,11 +10,11 @@
 #include <xclib.h>
 #include <print.h>
 
-#define outuintb(c, x) outuint(c, byterev(x))
-
 extern unsigned int  lookup40w[256];
 extern unsigned char lookup40b[256];
 extern unsigned      lookup20[256];
+
+#define outuintb(c, x) outuint(c, byterev(x))
 
 #pragma unsafe arrays
 void adat_transmit_until_ct_4x(chanend c_data, chanend c_port, int smux)
@@ -95,7 +95,7 @@ void adat_transmit_until_ct_2x(chanend c_data, chanend c_port, int smux)
   unsigned start;
   switch (smux)
   {
-    case 0: start = 0b00111111111100000000000000000000; break; //3ff00000
+    case 0: start = 0b00111111111100000000000000000000; break;
     case 2: start = 0b11000000111100000000000000000000; break;
     case 4: break; // TODO
   }
@@ -141,7 +141,7 @@ void adat_transmit_until_ct_2x(chanend c_data, chanend c_port, int smux)
         if (testct(c_data)) {
           return;
         }
-	    w[i] = inuint(c_data);
+	w[i] = inuint(c_data);
         w[i + 1] = inuint(c_data);
 #ifdef ADAT_TX_SINEWAVE
 	w[i] = 0;
