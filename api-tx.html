@@ -58,31 +58,73 @@ document.getElementById('d1').style.height=h2 + "px";
             
   <div class="section" id="adat-transmit">
 <h1>ADAT Transmit<a class="headerlink" href="#adat-transmit" title="Permalink to this headline">¶</a></h1>
-<p>There are two modules that can produce an ADAT signal. The simplest
-module is a single thread that receives samples over a channel and that
-outputs data on the port, and the other module has a thread that receives
-samples over a channel and it produces the output on a channel. The latter
-is useful if the ADAT output port is on a different core.</p>
-<p>The modules use the same protocol: the first word transmitted over the
+<p>There are two modules that can produce an ADAT signal. The simplest module
+is a single thread that inputs samples over a channel and that outputs data
+on a 1-bit port. A more complex module has a thread that inputs samples
+over a channel and that produces an ADAT signal onto a second channel.
+Another thread has to copy this data from the channel onto a port. The
+latter is useful if the ADAT output port is, for example, on a different
+core. See the examples section on how to use this.</p>
+<p>An identical protocol is used by both modules for inputting sample values
+to be transmitted over ADAT. The first word transmitted over the
 chanend should be the multiplier of the master clock (either 1024 or 512),
-the second word should be the smux (either 0 or 2), then there should be N
-x 8 words of sample values, terminated by an END control token. If no
+the second word should be the SMUX setting (either 0 or 2), then there should be N
+x 8 words of sample values, terminated by an <tt class="docutils literal"><span class="pre">XS1_CT_END</span></tt> control token. If no
 control token is sent, the transmission process will not terminate, and an
 infinite stream of ADAT data can be sent.</p>
 <p>The multiplier is the ratio between the master clock and the bit-rate; 1024
 refers to a 49.152 Mhz masterclock, 512 assumes a 24.576 MHz master clock.</p>
+<p>The output of the ADAT transmit thread has to be synchronised with an
+external flip-flop. In order to make sure that the flip-flop captures the
+signal on the right edge, the output port should be set up as follows:</p>
+<div class="highlight-none"><div class="highlight"><pre>set_clock_src(mck_blk, mck);        // Connect Master Clock Block to mclk pin
+set_port_clock(adat_port, mck_blk); // Set ADAT_tx to be clocked from mck_blk
+set_clock_fall_delay(mck_blk, 7);   // Delay falling edge of mck_blk
+start_clock(mck_blk);               // Start mck_blk
+</pre></div>
+</div>
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
-<p><em>This section is to be completed</em></p>
 <dl class="function">
 <dt id="adat_tx">
 void <tt class="descname">adat_tx</tt><big>(</big>chanend<em>&nbsp;c_data</em>, chanend<em>&nbsp;c_port</em><big>)</big><a class="headerlink" href="#adat_tx" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Function that takes data over a channel end, and that outputs this in ADAT format onto a 1-bit port.</p>
+<p>The 1-bit port should be clocked by the master-clock, and an external flop should be used to precisely align the edge of the signal to the master-clock.</p>
+<p>Data should be send onto c_data using outuint only, the first two values should be The multiplier and the smux values, after that output any number of eight samples (24-bit, right aligned), and if the process is to be terminated send it an control token 1.</p>
+<p>The data is output onto a channel, which a separate process should output to a port. This process should byte-reverse every word read over the channel, and then output the reversed word to a buffered 1-bit port.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>c_data</strong> &#8211; Channel over which to send sample values to the transmitter</li>
+<li><strong>c_port</strong> &#8211; Channel on which to generate the ADAT stream</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="adat_tx_port">
 void <tt class="descname">adat_tx_port</tt><big>(</big>chanend<em>&nbsp;c_data</em>, buffered out port:32<em>&nbsp;p_data</em><big>)</big><a class="headerlink" href="#adat_tx_port" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Function that takes data over a channel end, and that outputs this in ADAT format onto a 1-bit port.</p>
+<p>The 1-bit port should be clocked by the master-clock, and an external flop should be used to precisely align the edge of the signal to the master-clock.</p>
+<p>Data should be send onto c_data using outuint only, the first two values should be The multiplier and the smux values, after that output any number of eight samples (24-bit, right aligned), and if the process is to be terminated send it an control token 1.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>c_data</strong> &#8211; Channel over which to send sample values to the transmitter</li>
+<li><strong>p_data</strong> &#8211; 1-bit port on which to generate the ADAT stream</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="example">

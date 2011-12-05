@@ -121,8 +121,53 @@ void <tt class="descname">adatReceiver44100</tt><big>(</big>buffered in port:32<
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<p>An example program is shown below. <em>To be completed</em></p>
-<div class="highlight-none"><div class="highlight"><pre>
+<p>An example program is shown below. The input port needs to be declared as a
+buffered port:</p>
+<div class="highlight-none"><div class="highlight"><pre>#include &lt;xs1.h&gt;
+#include &quot;adat_rx.h&quot;
+
+buffered in port:32 adat = XS1_PORT_1P;
+</pre></div>
+</div>
+<p>The receive function should be called from a <tt class="docutils literal"><span class="pre">while(1)</span></tt> loop. The second
+call in the while loop is optional, and only required if 44,100 Hz data
+should be received:</p>
+<div class="highlight-none"><div class="highlight"><pre>void receiveAdat(chanend c) {
+    while(1) {
+        adatReceiver48000(adat, c);
+        adatReceiver44100(adat, c);   // delete this line if only 48000 required.
+    }
+}
+</pre></div>
+</div>
+<p>The data handler should inspect received data samples and synchronise with
+the beginning of each frame. In this case, we expect every 9th value to be
+marked with a &#8216;1&#8217; nibble to indicate end-of-frame.</p>
+<div class="highlight-none"><div class="highlight"><pre>void collectSamples(chanend c) {
+    unsigned head, channels[9];
+    while(1) {
+        for(int i = 0; i &lt; 9; i++) {
+            head = inuint(c);         // This will be 24 bits data in each word, shifted up 4 bits.
+            if ((head &amp; 0xF) == 1) {
+                break;
+            }
+            channels[i] = head &lt;&lt; 4;
+        }
+        // One whole frame in channels [0..7]
+    }
+}
+</pre></div>
+</div>
+<p>The main program simply forks the data handling thread and the receiver in
+parallel in two threads:</p>
+<div class="highlight-none"><div class="highlight"><pre>int main(void) {
+    chan c;
+    par {
+        receiveAdat(c);
+        collectSamples(c);
+    }                                           
+    return 0;
+}
 </pre></div>
 </div>
 </div>
