@@ -1,0 +1,210 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ADAT software &mdash; S/PDIF 1v0 documentation</title>
+    <link rel="stylesheet" href="_static/xdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1v0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://mathjax.connectmv.com/MathJax.js"></script>
+    <script type="text/javascript" src="_static/xcomment.js"></script>
+    <link rel="top" title="S/PDIF 1v0 documentation" href="index.html" />
+    <link rel="next" title="ADAT Receive" href="api-rx.html" />
+    <link rel="prev" title="Documentation" href="index.html" /> 
+
+<script>
+function setheight() {
+h1 = document.getElementById('d1').style.height;
+h2 = document.getElementById('d2').style.height;
+
+if (parseInt(h1) > parseInt(h2)) {
+document.getElementById('d2').style.height=h1 + "px";
+}
+else {
+document.getElementById('d1').style.height=h2 + "px";
+}
+
+}
+</script>
+</head>
+
+<body onload="setheight();">
+
+  
+
+    <div class="document" id='d1'>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+<div style="float: right">
+<a href="index.html"
+                        title="previous chapter"> &lt&lt </a>
+<a href="api-rx.html"
+                        title="next chapter"> &gt&gt </a></p>
+</div>
+
+            
+  <div class="section" id="adat-software">
+<h1>ADAT software<a class="headerlink" href="#adat-software" title="Permalink to this headline">¶</a></h1>
+<p>ADAT is a protocol to transmit audio
+data over either coaxial or optical cables. The data transmission rate is
+determined by the transmitter, and the receiver has to recover the sample
+rate. ADAT normally carries 8 channels.</p>
+<p>Important characteristics of ADAT software are the following:</p>
+<ul class="simple">
+<li>The sample rate(s) supported. Typical values are 44.1 or 48. 96 and 192
+may be supported, but typically with only 4 or 2 channels.</li>
+<li>Transmit and Receive support. Some systems require only ADAT output, or
+only ADAT input. Others require both.</li>
+</ul>
+<p>Note that ADAT of eight channels at 48 Khz is identical to two channels at
+192 KHz - a single bit in the data stream differentiates it (but the bit
+rates, transmit, and receive code are identical).</p>
+<div class="section" id="module-adat-tx">
+<h2>module_adat_tx<a class="headerlink" href="#module-adat-tx" title="Permalink to this headline">¶</a></h2>
+<p>This module can transmit S/PDIF signals at the following rates
+(assuming eight threads on a 400 MHz part):</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="22%" />
+<col width="17%" />
+<col width="14%" />
+<col width="33%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td colspan="2">Functionality provided</td>
+<td colspan="2">Resources required</td>
+<td rowspan="2">Status</td>
+</tr>
+<tr class="row-even"><td>Channels</td>
+<td>Sample Rate</td>
+<td>1-bit port</td>
+<td>Memory</td>
+</tr>
+<tr class="row-odd"><td>8</td>
+<td>up to 48 KHz</td>
+<td>1-2</td>
+<td>TBC</td>
+<td>Implemented and tested</td>
+</tr>
+</tbody>
+</table>
+<p>It requires a single thread to run the transmit code. The number of 1-bit
+ports depends on whether the master clock is already available on a one-bit
+port. If available, then only a single 1-bit port is required to output
+ADAT. If not, then two ports are required, one for the signal output, and
+one for the master-clock input.</p>
+<p>An external flip-flop is required to resynchronise the data signal to the
+master-clock if more than 2 channels are used, or if the sample rate is
+higher than 48 KHz.</p>
+<p>The precise transmission frequencies supported depend on the availability
+of an external clock (eg, a PLL or a crystal oscillator) that runs at a
+frequency of:</p>
+<div class="highlight-none"><div class="highlight"><pre>512 * sampleRate
+</pre></div>
+</div>
+<p>or a power-of-2 multiple. For example, for 48 Khz the
+external clock has to run at a frequency of 24.576 MHz.
+If both 44,1 and 48 Khz frequencies are to be supported, both a
+24.587 MHz and a 22.579 MHz master clock are required. This is normally not
+an issue since the same clocks can be used to drive the audio codecs.</p>
+<p>Typical applications for this module include iPod docks, digital microphones,
+digital mixing desks, USB audio, and AVB.</p>
+</div>
+<div class="section" id="module-adat-rx">
+<h2>module_adat_rx<a class="headerlink" href="#module-adat-rx" title="Permalink to this headline">¶</a></h2>
+<p>This module can receive ADAT signals at the following rates
+(assuming 8 threads on a 400 MHz part (?)):</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="22%" />
+<col width="16%" />
+<col width="16%" />
+<col width="32%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td colspan="2">Functionality provided</td>
+<td colspan="2">Resources required</td>
+<td rowspan="2">Status</td>
+</tr>
+<tr class="row-even"><td>Channels</td>
+<td>Sample Rate</td>
+<td>1-bit port</td>
+<td>Memory</td>
+</tr>
+<tr class="row-odd"><td>8</td>
+<td>up to 48 KHz</td>
+<td>1</td>
+<td>1.5-3.5 KB</td>
+<td>Implemented and tested</td>
+</tr>
+</tbody>
+</table>
+<p>A single 50-MIPS thread is required. The receiver does not require any
+external clock, but can only recover 44.1 and 48 KHz sample rates. The
+amount of memory depends on whether both 44.1 and 48 KHz are to be
+supported, or just a single frequency.</p>
+<p>Typical applications for this module include digital speakers,
+digital mixing desks, USB audio, and AVB.</p>
+</div>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" id='d2'>
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">S/PDIF (1v0)</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">ADAT software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-adat-tx">module_adat_tx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-adat-rx">module_adat_rx</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api-rx.html">ADAT Receive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-tx.html">ADAT Transmit</a></li>
+</ul>
+
+<div id="searchbox" style="display: none;margin-bottom: 10px;">
+  <h3>Search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+
+    <div class="footer">
+    </div>
+  </body>
+</html>
+
+
+

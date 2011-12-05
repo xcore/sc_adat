@@ -1,0 +1,172 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ADAT Receive &mdash; S/PDIF 1v0 documentation</title>
+    <link rel="stylesheet" href="_static/xdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1v0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://mathjax.connectmv.com/MathJax.js"></script>
+    <script type="text/javascript" src="_static/xcomment.js"></script>
+    <link rel="top" title="S/PDIF 1v0 documentation" href="index.html" />
+    <link rel="next" title="ADAT Transmit" href="api-tx.html" />
+    <link rel="prev" title="ADAT software" href="summary.html" /> 
+
+<script>
+function setheight() {
+h1 = document.getElementById('d1').style.height;
+h2 = document.getElementById('d2').style.height;
+
+if (parseInt(h1) > parseInt(h2)) {
+document.getElementById('d2').style.height=h1 + "px";
+}
+else {
+document.getElementById('d1').style.height=h2 + "px";
+}
+
+}
+</script>
+</head>
+
+<body onload="setheight();">
+
+  
+
+    <div class="document" id='d1'>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+<div style="float: right">
+<a href="summary.html"
+                        title="previous chapter"> &lt&lt </a>
+<a href="api-tx.html"
+                        title="next chapter"> &gt&gt </a></p>
+</div>
+
+            
+  <div class="section" id="adat-receive">
+<h1>ADAT Receive<a class="headerlink" href="#adat-receive" title="Permalink to this headline">¶</a></h1>
+<p>The ADAT receive module comprises a single thread that parses data as it
+arrives on a one-bit port and that outputs words of data onto a streaming
+channel end. Each word of data carries 24 bits of sample data and 4 bits of
+channel information.</p>
+<p>This modules depends on the reference clock being exactly 100 Mhz.</p>
+<p>THe module has two functions, one that receives adat at 48 KHz, and one
+that receives ADAT at 44.1 KHz. If the frequency of the input signal is
+known a priori, the call that function in a non terminating <tt class="docutils literal"><span class="pre">while(1)</span></tt>
+loop. If the frequency could be either, then call the two functions in
+succession from a <tt class="docutils literal"><span class="pre">while(1)</span></tt> loop.</p>
+<p>Note that the two functions use a normal chanend, but assume that data is
+read as if it was a streaming channel end. This is historic, and the
+interface should be changed to use a streaming chanend. This will require
+any application using this function to be changed (no change is required in
+the module itself).</p>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="adatReceiver48000">
+void <tt class="descname">adatReceiver48000</tt><big>(</big>buffered in port:32<em>&nbsp;p</em>, chanend<em>&nbsp;oChan</em><big>)</big><a class="headerlink" href="#adatReceiver48000" title="Permalink to this definition">¶</a></dt>
+<dd><p>ADAT Receive Thread (48kHz sample rate).</p>
+<p>When a data rame is received, samples will be output onto the streaming channel At first a word 0x000000Z1 will be output, where <tt class="docutils literal"><span class="pre">Z</span></tt> are the user data; after that eight words 0x0ZZZZZZ0 will be output where <tt class="docutils literal"><span class="pre">ZZZZZZ</span></tt> is a 24-bit sample value. The eight words may refer to sample values on eight channels, or on fewer channels if muxing is used.</p>
+<p>The function will return if it cannot lock onto a 48,000 Hz signal. Normally the 48000 function is called in a while(1) loop. If both 44,100 and 48,000 need to be supported, they should be called in sequence in a while(1) loop. Note that the functions are large, and that 44,100 should not be called if 44.1 KHz does not need to be supported.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>p</strong> &#8211; ADAT port - should be 1-bit and clocked at 100MHz</li>
+<li><strong>oChan</strong> &#8211; channel on which decoded samples are output</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="adatReceiver44100">
+void <tt class="descname">adatReceiver44100</tt><big>(</big>buffered in port:32<em>&nbsp;p</em>, chanend<em>&nbsp;oChan</em><big>)</big><a class="headerlink" href="#adatReceiver44100" title="Permalink to this definition">¶</a></dt>
+<dd><p>ADAT Receive Thread (44.1kHz sample rate).</p>
+<p>When a data rame is received, samples will be output onto the streaming channel At first a word 0x000000Z1 will be output, where <tt class="docutils literal"><span class="pre">Z</span></tt> are the user data; after that eight words 0x0ZZZZZZ0 will be output where <tt class="docutils literal"><span class="pre">ZZZZZZ</span></tt> is a 24-bit sample value. The eight words may refer to sample values on eight channels, or on fewer channels if muxing is used.</p>
+<p>The function will return if it cannot lock onto a 44,100 Hz signal. Normally the 44,100 function is called in a while(1) loop. If both 44,100 and 48,000 need to be supported, they should be called in sequence in a while(1) loop. Note that the functions are large, and that 48,000 should not be called if 48 Khz does not need to be supported.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>p</strong> &#8211; ADAT port - should be 1-bit and clocked at 100MHz</li>
+<li><strong>oChan</strong> &#8211; channel on which decoded samples are output</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>An example program is shown below. <em>To be completed</em></p>
+<div class="highlight-none"><div class="highlight"><pre>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" id='d2'>
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">S/PDIF (1v0)</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="summary.html">ADAT software</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">ADAT Receive</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#api">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api-tx.html">ADAT Transmit</a></li>
+</ul>
+
+<div id="searchbox" style="display: none;margin-bottom: 10px;">
+  <h3>Search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+
+    <div class="footer">
+    </div>
+  </body>
+</html>
+
+
+
