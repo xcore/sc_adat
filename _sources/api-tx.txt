@@ -77,7 +77,7 @@ parallel in two threads. Prior to starting the transmitter, the clocks
 should be set up:
 
 .. literalinclude:: app_adat_tx_direct_example/src/main.xc
-  :start-after: //::main program
+  :start-after: //::main
   :end-before: //::
 
 
@@ -124,6 +124,6 @@ parallel in two threads. Prior to starting the transmitter, the clocks
 should be set up:
 
 .. literalinclude:: app_adat_tx_example/src/main.xc
-  :start-after: //::main program
+  :start-after: //::main
   :end-before: //::
 

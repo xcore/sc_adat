@@ -169,7 +169,18 @@ flags, prior to transmitting data. To terminate, send an END token:</p>
 <p>The main program simply forks the data generating thread and the transmitter in
 parallel in two threads. Prior to starting the transmitter, the clocks
 should be set up:</p>
-<div class="highlight-none"><div class="highlight"><pre>
+<div class="highlight-none"><div class="highlight"><pre>int main(void) {
+	chan c_data;
+
+	par {
+		generateData(c_data);
+		{
+            setupClocks();
+			adat_tx(c_data, adat_port);
+		}
+	}
+	return 0;
+}
 </pre></div>
 </div>
 </div>
@@ -223,7 +234,17 @@ flags, prior to transmitting data. To terminate, send an END token:</p>
 <p>The main program simply forks the data generating thread and the transmitter in
 parallel in two threads. Prior to starting the transmitter, the clocks
 should be set up:</p>
-<div class="highlight-none"><div class="highlight"><pre>
+<div class="highlight-none"><div class="highlight"><pre>int main(void) {
+	chan c_data;
+    chan c_port;
+
+	par {
+		generateData(c_data);
+        adat_tx(c_data, c_port);
+        drivePort(c_port);
+	}
+	return 0;
+}
 </pre></div>
 </div>
 </div>
