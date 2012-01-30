@@ -129,9 +129,103 @@ void <tt class="descname">adat_tx_port</tt><big>(</big>chanend<em>&nbsp;c_data</
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<p>An example program is shown below:</p>
-<div class="highlight-none"><div class="highlight"><pre>TBC.
+<p>Below we show two example programs: a program that uses the direct
+interface, and a program that uses an intermediate thread to output to the
+port.</p>
+<div class="section" id="example-of-direct-port-code">
+<h3>Example of direct port code<a class="headerlink" href="#example-of-direct-port-code" title="Permalink to this headline">¶</a></h3>
+<p>The output port needs to be declared as a
+buffered port, and the master clock input must be declared as an unbuffered
+input port. A clock block is also required:</p>
+<div class="highlight-none"><div class="highlight"><pre>buffered out port:32 adat_port = XS1_PORT_1P;
+in port mck = XS1_PORT_1O;
+clock mck_blk = XS1_CLKBLK_2;
 </pre></div>
+</div>
+<p>The ports need to be setup so that the output port is clocked of the master
+clock with a suitable delay (to enable the external flop to latch the
+signal). Do not forget to start the clock block, otherwise nothing shall happen:</p>
+<div class="highlight-none"><div class="highlight"><pre>void setupClocks() {
+    set_clock_src(mck_blk, mck);
+    set_clock_fall_delay(mck_blk, 7);   // XAI2 board, set to appropriate value for board.
+
+    set_port_clock(adat_port, mck_blk);
+    start_clock(mck_blk);
+}
+</pre></div>
+</div>
+<p>The data generator should first transmit the clock multiplier and the SMUX
+flags, prior to transmitting data. To terminate, send an END token:</p>
+<div class="highlight-none"><div class="highlight"><pre>void generateData(chanend c_data) {
+	outuint(c_data, 512);    // master clock multiplier (1024, 256, or 512)
+	outuint(c_data, 0);      // SMUX flag (0, 2, or 4)
+	for (int i = 0; i &lt; 1000; i++) {
+		outuint(c_data, i);  // left aligned data (only 24 bits will be used)
+	}
+	outct(c_data, XS1_CT_END);
+}
+</pre></div>
+</div>
+<p>The main program simply forks the data generating thread and the transmitter in
+parallel in two threads. Prior to starting the transmitter, the clocks
+should be set up:</p>
+<div class="highlight-none"><div class="highlight"><pre>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-of-adat-with-an-extra-thread">
+<h3>Example of ADAT with an extra thread<a class="headerlink" href="#example-of-adat-with-an-extra-thread" title="Permalink to this headline">¶</a></h3>
+<p>The output port needs to be declared as a
+buffered port, and the master clock input must be declared as an unbuffered
+input port. A clock block is also required:</p>
+<div class="highlight-none"><div class="highlight"><pre>buffered out port:32 adat_port = XS1_PORT_1P;
+in port mck = XS1_PORT_1O;
+clock mck_blk = XS1_CLKBLK_2;
+</pre></div>
+</div>
+<p>The ports need to be setup so that the output port is clocked of the master
+clock with a suitable delay (to enable the external flop to latch the
+signal). Do not forget to start the clock block, otherwise nothing shall happen:</p>
+<div class="highlight-none"><div class="highlight"><pre>void setupClocks() {
+    set_clock_src(mck_blk, mck);
+    set_clock_fall_delay(mck_blk, 7);   // XAI2 board, set to appropriate value for board.
+    set_port_clock(adat_port, mck_blk);
+    start_clock(mck_blk);
+}
+</pre></div>
+</div>
+<p>The thread that drives the port should input words from the channel, and
+output them with <em>reversed byte order</em>. Note that this activity of INPUT,
+BYTEREV and OUTPUT takes only three instructions and can often be merged
+with other threads; for example if there is an I2S thread that delivers
+data syncrhonised to the same master clock, then that thread can
+simultaneously drive the ADAT and I2S ports:</p>
+<div class="highlight-none"><div class="highlight"><pre>void drivePort(chanend c_port) {
+    setupClocks();
+	while (1) {
+		adat_port &lt;: byterev(inuint(c_port));
+	}
+}
+</pre></div>
+</div>
+<p>The data generator should first transmit the clock multiplier and the SMUX
+flags, prior to transmitting data. To terminate, send an END token:</p>
+<div class="highlight-none"><div class="highlight"><pre>void generateData(chanend c_data) {
+	outuint(c_data, 512);    // master clock multiplier (1024, 256, or 512)
+	outuint(c_data, 0);      // SMUX flag (0, 2, or 4)
+	for (int i = 0; i &lt; 1000; i++) {
+		outuint(c_data, i);  // left aligned data (only 24 bits will be used)
+	}
+	outct(c_data, XS1_CT_END);
+}
+</pre></div>
+</div>
+<p>The main program simply forks the data generating thread and the transmitter in
+parallel in two threads. Prior to starting the transmitter, the clocks
+should be set up:</p>
+<div class="highlight-none"><div class="highlight"><pre>
+</pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -149,7 +243,11 @@ void <tt class="descname">adat_tx_port</tt><big>(</big>chanend<em>&nbsp;c_data</
 <li class="toctree-l1"><a class="reference internal" href="api-rx.html">ADAT Receive</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">ADAT Transmit</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#api">API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-of-direct-port-code">Example of direct port code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-of-adat-with-an-extra-thread">Example of ADAT with an extra thread</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
