@@ -41,7 +41,89 @@ API
 Example
 =======
 
+Below we show two example programs: a program that uses the direct
+interface, and a program that uses an intermediate thread to output to the
+port.
 
-An example program is shown below::
 
-  TBC.
+Example of direct port code
+---------------------------
+
+The output port needs to be declared as a
+buffered port, and the master clock input must be declared as an unbuffered
+input port. A clock block is also required:
+
+.. literalinclude:: app_adat_tx_direct_example/src/main.xc
+  :start-after: //::declaration
+  :end-before: //::
+
+The ports need to be setup so that the output port is clocked of the master
+clock with a suitable delay (to enable the external flop to latch the
+signal). Do not forget to start the clock block, otherwise nothing shall happen:
+
+.. literalinclude:: app_adat_tx_direct_example/src/main.xc
+  :start-after: //::setup
+  :end-before: //::
+
+The data generator should first transmit the clock multiplier and the SMUX
+flags, prior to transmitting data. To terminate, send an END token:
+
+.. literalinclude:: app_adat_tx_direct_example/src/main.xc
+  :start-after: //::generate
+  :end-before: //::
+
+The main program simply forks the data generating thread and the transmitter in
+parallel in two threads. Prior to starting the transmitter, the clocks
+should be set up:
+
+.. literalinclude:: app_adat_tx_direct_example/src/main.xc
+  :start-after: //::main
+  :end-before: //::
+
+
+
+Example of ADAT with an extra thread
+------------------------------------
+
+The output port needs to be declared as a
+buffered port, and the master clock input must be declared as an unbuffered
+input port. A clock block is also required:
+
+.. literalinclude:: app_adat_tx_example/src/main.xc
+  :start-after: //::declaration
+  :end-before: //::
+
+The ports need to be setup so that the output port is clocked of the master
+clock with a suitable delay (to enable the external flop to latch the
+signal). Do not forget to start the clock block, otherwise nothing shall happen:
+
+.. literalinclude:: app_adat_tx_example/src/main.xc
+  :start-after: //::setup
+  :end-before: //::
+
+The thread that drives the port should input words from the channel, and
+output them with *reversed byte order*. Note that this activity of INPUT,
+BYTEREV and OUTPUT takes only three instructions and can often be merged
+with other threads; for example if there is an I2S thread that delivers
+data syncrhonised to the same master clock, then that thread can
+simultaneously drive the ADAT and I2S ports:
+
+.. literalinclude:: app_adat_tx_example/src/main.xc
+  :start-after: //::drive
+  :end-before: //::
+
+The data generator should first transmit the clock multiplier and the SMUX
+flags, prior to transmitting data. To terminate, send an END token:
+
+.. literalinclude:: app_adat_tx_example/src/main.xc
+  :start-after: //::generate
+  :end-before: //::
+
+The main program simply forks the data generating thread and the transmitter in
+parallel in two threads. Prior to starting the transmitter, the clocks
+should be set up:
+
+.. literalinclude:: app_adat_tx_example/src/main.xc
+  :start-after: //::main
+  :end-before: //::
+

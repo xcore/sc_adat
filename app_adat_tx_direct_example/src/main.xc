@@ -18,19 +18,12 @@ clock mck_blk = XS1_CLKBLK_2;
 void setupClocks() {
     set_clock_src(mck_blk, mck);
     set_clock_fall_delay(mck_blk, 7);   // XAI2 board, set to appropriate value for board.
+
     set_port_clock(adat_port, mck_blk);
     start_clock(mck_blk);
 }
 //::
 
-//::drive
-void drivePort(chanend c_port) {
-    setupClocks();
-    while (1) {
-        adat_port <: byterev(inuint(c_port));
-    }
-}
-//::
 
 //::generate
 void generateData(chanend c_data) {
@@ -46,12 +39,13 @@ void generateData(chanend c_data) {
 //::main
 int main(void) {
     chan c_data;
-    chan c_port;
 
     par {
         generateData(c_data);
-        adat_tx(c_data, c_port);
-        drivePort(c_port);
+        {
+            setupClocks();
+            adat_tx(c_data, adat_port);
+        }
     }
     return 0;
 }
