@@ -24,13 +24,15 @@ module_adat_tx
 This module can transmit S/PDIF signals at the following rates
 (assuming eight threads on a 400 MHz part):
 
-+---------------------------+-----------------------+------------------------+
-| Functionality provided    | Resources required    | Status                 | 
-+----------+----------------+------------+----------+                        |
-| Channels | Sample Rate    | 1-bit port | Memory   |                        |
-+----------+----------------+------------+----------+------------------------+
-| 8        | up to 48 KHz   | 1-2        | TBC      | Implemented and tested |
-+----------+----------------+------------+----------+------------------------+
++---------------------------+-------------------------------+------------------------+
+| Functionality provided    | Resources required            | Status                 | 
++----------+----------------+------------+---------+--------+                        |
+| Channels | Sample Rate    | 1-bit port | Threads | Memory |                        |
++----------+----------------+------------+---------+--------+------------------------+
+| 8        | up to 48 KHz   | 1-2        | 1+      | 3.6K   | Implemented and tested |
++----------+----------------+------------+---------+--------+------------------------+
+| 8        | up to 48 KHz   | 1-2        | 1       | 3.5K   | Implemented and tested |
++----------+----------------+------------+---------+--------+------------------------+
 
 It requires a single thread to run the transmit code. The number of 1-bit
 ports depends on whether the master clock is already available on a one-bit

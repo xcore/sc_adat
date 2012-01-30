@@ -44,7 +44,7 @@ int main(void) {
         generateData(c_data);
         {
             setupClocks();
-            adat_tx(c_data, adat_port);
+            adat_tx_port(c_data, adat_port);
         }
     }
     return 0;
