@@ -157,12 +157,12 @@ signal). Do not forget to start the clock block, otherwise nothing shall happen:
 <p>The data generator should first transmit the clock multiplier and the SMUX
 flags, prior to transmitting data. To terminate, send an END token:</p>
 <div class="highlight-none"><div class="highlight"><pre>void generateData(chanend c_data) {
-	outuint(c_data, 512);    // master clock multiplier (1024, 256, or 512)
-	outuint(c_data, 0);      // SMUX flag (0, 2, or 4)
-	for (int i = 0; i &lt; 1000; i++) {
-		outuint(c_data, i);  // left aligned data (only 24 bits will be used)
-	}
-	outct(c_data, XS1_CT_END);
+    outuint(c_data, 512);    // master clock multiplier (1024, 256, or 512)
+    outuint(c_data, 0);      // SMUX flag (0, 2, or 4)
+    for (int i = 0; i &lt; 1000; i++) {
+        outuint(c_data, i);  // left aligned data (only 24 bits will be used)
+    }
+    outct(c_data, XS1_CT_END);
 }
 </pre></div>
 </div>
@@ -170,16 +170,16 @@ flags, prior to transmitting data. To terminate, send an END token:</p>
 parallel in two threads. Prior to starting the transmitter, the clocks
 should be set up:</p>
 <div class="highlight-none"><div class="highlight"><pre>int main(void) {
-	chan c_data;
+    chan c_data;
 
-	par {
-		generateData(c_data);
-		{
+    par {
+        generateData(c_data);
+        {
             setupClocks();
-			adat_tx(c_data, adat_port);
-		}
-	}
-	return 0;
+            adat_tx(c_data, adat_port);
+        }
+    }
+    return 0;
 }
 </pre></div>
 </div>
@@ -213,21 +213,21 @@ data syncrhonised to the same master clock, then that thread can
 simultaneously drive the ADAT and I2S ports:</p>
 <div class="highlight-none"><div class="highlight"><pre>void drivePort(chanend c_port) {
     setupClocks();
-	while (1) {
-		adat_port &lt;: byterev(inuint(c_port));
-	}
+    while (1) {
+        adat_port &lt;: byterev(inuint(c_port));
+    }
 }
 </pre></div>
 </div>
 <p>The data generator should first transmit the clock multiplier and the SMUX
 flags, prior to transmitting data. To terminate, send an END token:</p>
 <div class="highlight-none"><div class="highlight"><pre>void generateData(chanend c_data) {
-	outuint(c_data, 512);    // master clock multiplier (1024, 256, or 512)
-	outuint(c_data, 0);      // SMUX flag (0, 2, or 4)
-	for (int i = 0; i &lt; 1000; i++) {
-		outuint(c_data, i);  // left aligned data (only 24 bits will be used)
-	}
-	outct(c_data, XS1_CT_END);
+    outuint(c_data, 512);    // master clock multiplier (1024, 256, or 512)
+    outuint(c_data, 0);      // SMUX flag (0, 2, or 4)
+    for (int i = 0; i &lt; 1000; i++) {
+        outuint(c_data, i);  // left aligned data (only 24 bits will be used)
+    }
+    outct(c_data, XS1_CT_END);
 }
 </pre></div>
 </div>
@@ -235,15 +235,15 @@ flags, prior to transmitting data. To terminate, send an END token:</p>
 parallel in two threads. Prior to starting the transmitter, the clocks
 should be set up:</p>
 <div class="highlight-none"><div class="highlight"><pre>int main(void) {
-	chan c_data;
+    chan c_data;
     chan c_port;
 
-	par {
-		generateData(c_data);
+    par {
+        generateData(c_data);
         adat_tx(c_data, c_port);
         drivePort(c_port);
-	}
-	return 0;
+    }
+    return 0;
 }
 </pre></div>
 </div>
