@@ -6,13 +6,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ADAT Receive &mdash; S/PDIF 1v0 documentation</title>
+    <title>ADAT Receive &mdash; Documentation  documentation</title>
     <link rel="stylesheet" href="_static/xdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '1v0',
+        VERSION:     '',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,9 +21,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://mathjax.connectmv.com/MathJax.js"></script>
     <script type="text/javascript" src="_static/xcomment.js"></script>
-    <link rel="top" title="S/PDIF 1v0 documentation" href="index.html" />
+    <link rel="top" title="Documentation  documentation" href="index.html" />
     <link rel="next" title="ADAT Transmit" href="api-tx.html" />
     <link rel="prev" title="ADAT software" href="summary.html" /> 
 
@@ -78,6 +77,19 @@ any application using this function to be changed (no change is required in
 the module itself).</p>
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="compile-time-defines">
+<h3>Compile time defines<a class="headerlink" href="#compile-time-defines" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><em>ADAT_REF</em></dt>
+<dd>Define this to 100 to state that the reference clock is exactly
+100 MHz (for example when using a 20 or 25 MHz crystal), or 999375
+to state that the reference clock is 99.9375 MHz (the
+result of using a 13 MHz crystal on an L1 or L2). Other values are at
+present not supported.</dd>
+</dl>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="adatReceiver48000">
 void <tt class="descname">adatReceiver48000</tt><big>(</big>buffered in port:32<em>&nbsp;p</em>, chanend<em>&nbsp;oChan</em><big>)</big><a class="headerlink" href="#adatReceiver48000" title="Permalink to this definition">¶</a></dt>
@@ -118,6 +130,7 @@ void <tt class="descname">adatReceiver44100</tt><big>(</big>buffered in port:32<
 </table>
 </dd></dl>
 
+</div>
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
@@ -180,11 +193,15 @@ parallel in two threads:</p>
       </div>
       <div class="sphinxsidebar" id='d2'>
         <div class="sphinxsidebarwrapper">
-<h3><a href="index.html">S/PDIF (1v0)</a></h3>
+<h3><a href="index.html">Documentation</a></h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="summary.html">ADAT software</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">ADAT Receive</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#api">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api">API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#compile-time-defines">Compile time defines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
 </ul>
 </li>
