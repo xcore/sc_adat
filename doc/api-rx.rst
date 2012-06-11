@@ -23,6 +23,19 @@ the module itself).
 API
 ===
 
+Compile time defines
+--------------------
+
+*ADAT_REF*
+  Define this to 100 to state that the reference clock is exactly
+  100 MHz (for example when using a 20 or 25 MHz crystal), or 999375
+  to state that the reference clock is 99.9375 MHz (the
+  result of using a 13 MHz crystal on an L1 or L2). Other values are at
+  present not supported.
+
+Functions
+---------
+
 .. doxygenfunction:: adatReceiver48000
 
 .. doxygenfunction:: adatReceiver44100
