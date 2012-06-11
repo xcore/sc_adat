@@ -1,0 +1,27 @@
+Running Sphinx v1.1.2
+loading pickled environment... not yet created
+building [html]: targets for 4 source files that are out of date
+updating environment: 4 added, 0 changed, 0 removed
+reading sources... [ 25%] api-rx
+Rendering Doxygen function void adatReceiver48000
+Rendering Doxygen function void adatReceiver44100
+reading sources... [ 50%] api-tx
+Rendering Doxygen function void adat_tx
+Rendering Doxygen function void adat_tx_port
+reading sources... [ 75%] index
+reading sources... [100%] summary
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [ 25%] api-rx
+writing output... [ 50%] api-tx
+writing output... [ 75%] index
+writing output... [100%] summary
+
+writing additional files... genindex search
+copying static files... done
+dumping search index... done
+dumping object inventory... done
+build succeeded.
