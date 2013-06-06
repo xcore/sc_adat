@@ -1,5 +1,5 @@
-<title>
-.......
+ADAT Digital Audio Interface
+............................
 
 :Stable release:  unreleased (see `versioning <https://github.com/xcore/Community/wiki/Versioning>`_)
 
@@ -20,7 +20,8 @@ Key Features
 To Do
 =====
 
-* There is no out of the box version for non 100 Mhz reference clocks.
+This software relies on the reference clock being 100 MHz, there is no out of the box version for non
+100 Mhz reference clocks.
 
 
 Firmware Overview
@@ -35,9 +36,10 @@ Known Issues
 * None
 
 Required Repositories
-================
+=====================
 
 * xcommon git\@github.com:xcore/xcommon.git
+* xdoc git\@github.com:xcore/xdoc.git
 
 Support
 =======
