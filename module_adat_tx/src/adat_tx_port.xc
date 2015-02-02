@@ -18,7 +18,7 @@ void adat_transmit_port_until_ct_4x(chanend c_data, buffered out port:32 p_data,
   unsigned last_lookup = 0;
   unsigned start;
   switch (smux) {
-    case 0: start = 0b00001111111111111111111100000000; break;
+    case 1: start = 0b00001111111111111111111100000000; break;
     case 2: start = 0b11110000000000001111111100000000; break;
     case 4: break; // TODO
   }
@@ -95,7 +95,7 @@ void adat_transmit_port_until_ct_2x(chanend c_data, buffered out port:32 p_data,
   unsigned start;
   switch (smux)
   {
-    case 0: start = 0b00111111111100000000000000000000; break; // 3ff00000
+    case 1: start = 0b00111111111100000000000000000000; break; // 3ff00000
     case 2: start = 0b11000000111100000000000000000000; break;
     case 4: break; // TODO
   }
