@@ -208,26 +208,25 @@ void adat_tx_port(chanend c_data, buffered out port:32 p_data)
 {
   set_thread_fast_mode_on();
 
-  while (1) {
-    int multiplier = inuint(c_data);
-    int smux = inuint(c_data);
+  int multiplier = inuint(c_data);
+  int smux = inuint(c_data);
 
-    // prefilling the output port:
-    // 3/6/12 outputs and 8 inputs per frame = 0.375/0.75/1.5 outputs per input
-    for (int i = 0; i < 8; i++) {
-      inuint(c_data);
-    }
-    p_data <: byterev(0);
-    p_data <: byterev(0);
-    p_data <: byterev(0);
-    p_data <: byterev(0);
-
-    switch (multiplier) {
-      case 1024: adat_transmit_port_until_ct_4x(c_data, p_data, smux); break;
-      case 512: adat_transmit_port_until_ct_2x(c_data, p_data, smux); break;
-      case 256: adat_transmit_port_until_ct_1x(c_data, p_data, smux); break;
-    }
-
-    chkct(c_data, XS1_CT_END);
+  // prefilling the output port:
+  // 3/6/12 outputs and 8 inputs per frame = 0.375/0.75/1.5 outputs per input
+  for (int i = 0; i < 8; i++) 
+  {
+    inuint(c_data);
   }
+  p_data <: byterev(0); 
+  p_data <: byterev(0);
+  p_data <: byterev(0);
+  p_data <: byterev(0);
+
+  switch (multiplier) {
+    case 1024: adat_transmit_port_until_ct_4x(c_data, p_data, smux); break;
+    case 512: adat_transmit_port_until_ct_2x(c_data, p_data, smux); break;
+    case 256: adat_transmit_port_until_ct_1x(c_data, p_data, smux); break;
+  }
+
+  chkct(c_data, XS1_CT_END);
 }
