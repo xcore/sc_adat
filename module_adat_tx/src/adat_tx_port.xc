@@ -154,11 +154,6 @@ void adat_transmit_port_until_ct_2x(chanend c_data, buffered out port:32 p_data,
       else
         next_lookup = lookup20[(w[i] >> 16) & 0xFF];
 
-      // used to be:
-      //outuintb(c_port, (next_lookup << 20) | (last_lookup & 0xFFFFF));
-      //outuchar(c_port, next_lookup >> 12);
-
-      //tmp = (next_lookup << 20) | (last_lookup & 0xFFFFF);
       p_data <: (next_lookup << 20) | (last_lookup & 0xFFFFF);
       partout(p_data, 8, (next_lookup >> 12));
       // Note: This is what's achieved by outuchar(c_port, next_lookup >> 12); in the original impl
