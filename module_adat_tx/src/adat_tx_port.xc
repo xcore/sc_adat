@@ -53,6 +53,7 @@ void adat_transmit_port_until_ct_4x(chanend c_data, buffered out port:32 p_data,
     }
 
     // output 8 times three 10-bit chunks - each lookup is 40 bits (4x oversampling)
+#pragma loop unroll
     for (int i = 0; i < 8; i++) {
       if (i == 2 || i == 4 || i == 6) {
         if (testct(c_data)) {
@@ -61,14 +62,9 @@ void adat_transmit_port_until_ct_4x(chanend c_data, buffered out port:32 p_data,
         w[i] = inuint(c_data);
         w[i + 1] = inuint(c_data);
       }
-#pragma loop unroll(3)
+#pragma loop unroll
       for (int j = 24; j >= 8; j -= 8) {
         if (last_lookup & 0x80) {
-        	// used to be:
-            //outuint(c_port, ~lookup40w[(w[i] >> j) & 0xFF]);
-            //last_lookup = ~lookup40b[(w[i] >> j) & 0xFF];
-            //outuchar(c_port, last_lookup);
-
           p_data <: byterev(~lookup40w[(w[i] >> j) & 0xFF]);
           last_lookup = ~lookup40b[(w[i] >> j) & 0xFF];
           partout(p_data, 8, last_lookup);
