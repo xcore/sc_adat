@@ -17,6 +17,11 @@ void adat_transmit_port_until_ct_4x(chanend c_data, buffered out port:32 p_data,
   // note: byte reverse is necessary in order to output 40 bits as unint+uchar (rather than 5 uchars)
   unsigned last_lookup = 0;
   unsigned start;
+
+#ifdef ADAT_TX_USE_SHARED_BUFF
+  volatile unsigned * unsafe bufferPtr;
+#endif
+
   switch (smux) {
     case 0:
     case 1: start = 0b00001111111111111111111100000000; break;
