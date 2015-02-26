@@ -89,6 +89,11 @@ void adat_transmit_port_until_ct_2x(chanend c_data, buffered out port:32 p_data,
 #endif
   unsigned last_lookup = 0;
   unsigned start;
+
+#ifdef ADAT_TX_USE_SHARED_BUFF
+  volatile unsigned * unsafe bufferPtr;
+#endif
+
   switch (smux)
   {
     case 1: start = 0b00111111111100000000000000000000; break; // 3ff00000
@@ -97,8 +102,25 @@ void adat_transmit_port_until_ct_2x(chanend c_data, buffered out port:32 p_data,
   }
   while (!testct(c_data)) {
     unsigned w[8];
-    w[0] = inuint(c_data);
-    w[1] = inuint(c_data);
+
+#ifdef ADAT_TX_USE_SHARED_BUFF
+    unsafe
+    {
+        /* Receive pointer to sample buffer over channel */
+        bufferPtr = (unsigned * unsafe) inuint(c_data);
+#pragma loop unroll
+        for(int i = 0; i< 8; i++)
+        {
+            w[i] = bufferPtr[i];
+        }
+        /* Handshake back to indicate done with buffer */
+        outuint(c_data, 0);
+    }
+#else
+        w[0] = inuint(c_data);
+        w[1] = inuint(c_data);
+#endif
+
 #ifdef adat_tx_port_SINEWAVE
     w[0] = sinewave[sinewave_i];
     w[1] = sinewave[sinewave_i];
@@ -134,13 +156,15 @@ void adat_transmit_port_until_ct_2x(chanend c_data, buffered out port:32 p_data,
     for (int i = 0; i < 8; i += 2) {
       unsigned next_lookup;
       if (i > 0) {
+#ifndef ADAT_TX_USE_SHARED_BUFF
         if (testct(c_data)) {
           return;
         }
 	    w[i] = inuint(c_data);
         w[i + 1] = inuint(c_data);
+#endif
 #ifdef adat_tx_port_SINEWAVE
-	w[i] = 0;
+	    w[i] = 0;
         w[i + 1] = 0;
 #endif
       }
@@ -203,20 +227,22 @@ void adat_tx_port(chanend c_data, buffered out port:32 p_data)
 
   // prefilling the output port:
   // 3/6/12 outputs and 8 inputs per frame = 0.375/0.75/1.5 outputs per input
-  for (int i = 0; i < 8; i++) 
+  
+  /* Wait for the other side to start up */
+  if(!testct(c_data))
   {
-    inuint(c_data);
-  }
-  p_data <: byterev(0); 
-  p_data <: byterev(0);
-  p_data <: byterev(0);
-  p_data <: byterev(0);
+    p_data <: byterev(0); 
+    p_data <: byterev(0);
+    p_data <: byterev(0);
+    p_data <: byterev(0);
 
-  switch (multiplier) {
-    case 1024: adat_transmit_port_until_ct_4x(c_data, p_data, smux); break;
-    case 512: adat_transmit_port_until_ct_2x(c_data, p_data, smux); break;
-    case 256: adat_transmit_port_until_ct_1x(c_data, p_data, smux); break;
-  }
+    switch (multiplier) {
+      case 1024: adat_transmit_port_until_ct_4x(c_data, p_data, smux); break;
+      case 512: adat_transmit_port_until_ct_2x(c_data, p_data, smux); break;
+      case 256: adat_transmit_port_until_ct_1x(c_data, p_data, smux); break;
+    }
 
+  }
+  
   chkct(c_data, XS1_CT_END);
 }
