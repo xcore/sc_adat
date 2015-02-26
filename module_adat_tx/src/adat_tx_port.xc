@@ -202,7 +202,6 @@ void adat_transmit_port_until_ct_1x(chanend c_data, buffered out port:32 p_data,
 
 void adat_tx_port(chanend c_data, buffered out port:32 p_data)
 {
-  set_thread_fast_mode_on();
 
   int multiplier = inuint(c_data);
   int smux = inuint(c_data);
