@@ -13,3 +13,4 @@ doc/Doxyfile-e
 doc/_build/
 doc/index.pdf
 doc/.linked_dirs
+*~

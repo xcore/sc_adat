@@ -20,15 +20,16 @@ Key Features
 To Do
 =====
 
-This software relies on the reference clock being 100 MHz, there is no out of the box version for non
+* This software relies on the reference clock being 100 MHz, there is no out of the box version for non
 100 Mhz reference clocks.
 
+* ADAT Tx for 256x master clock (i.e. 48kHz from 12.288MHz master clock) not yet implemented  
 
 Firmware Overview
 =================
 
 The modules in this repo implement an ADAT transmitter and receiver in a
-thread each. Separate threads are required to collect and supply data.
+core each. Separate cores are required to collect and supply data.
 
 Known Issues
 ============

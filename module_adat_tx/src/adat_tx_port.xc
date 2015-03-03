@@ -17,15 +17,37 @@ void adat_transmit_port_until_ct_4x(chanend c_data, buffered out port:32 p_data,
   // note: byte reverse is necessary in order to output 40 bits as unint+uchar (rather than 5 uchars)
   unsigned last_lookup = 0;
   unsigned start;
+
+#ifdef ADAT_TX_USE_SHARED_BUFF
+  volatile unsigned * unsafe bufferPtr;
+#endif
+
   switch (smux) {
-    case 0: start = 0b00001111111111111111111100000000; break;
+    case 0:
+    case 1: start = 0b00001111111111111111111100000000; break;
     case 2: start = 0b11110000000000001111111100000000; break;
     case 4: break; // TODO
   }
   while (!testct(c_data)) {
     unsigned w[8];
+
+#ifdef ADAT_TX_USE_SHARED_BUFF
+    unsafe
+    {
+        /* Receive pointer to sample buffer over channel */
+        bufferPtr = (unsigned * unsafe) inuint(c_data);
+#pragma loop unroll
+        for(int i = 0; i< 8; i++)
+        {
+            w[i] = bufferPtr[i];
+        }
+        /* Handshake back to indicate done with buffer */
+        outuint(c_data, 0);
+    }
+#else
     w[0] = inuint(c_data);
     w[1] = inuint(c_data);
+#endif
 
     // sync and user bits - 16 bits output as 64 bits (4x oversampling)
     /*  smux 2:
@@ -53,7 +75,9 @@ void adat_transmit_port_until_ct_4x(chanend c_data, buffered out port:32 p_data,
     }
 
     // output 8 times three 10-bit chunks - each lookup is 40 bits (4x oversampling)
+#pragma loop unroll
     for (int i = 0; i < 8; i++) {
+#ifndef ADAT_TX_USE_SHARED_BUFF
       if (i == 2 || i == 4 || i == 6) {
         if (testct(c_data)) {
           return;
@@ -61,14 +85,10 @@ void adat_transmit_port_until_ct_4x(chanend c_data, buffered out port:32 p_data,
         w[i] = inuint(c_data);
         w[i + 1] = inuint(c_data);
       }
-#pragma loop unroll(3)
+#endif
+#pragma loop unroll
       for (int j = 24; j >= 8; j -= 8) {
         if (last_lookup & 0x80) {
-        	// used to be:
-            //outuint(c_port, ~lookup40w[(w[i] >> j) & 0xFF]);
-            //last_lookup = ~lookup40b[(w[i] >> j) & 0xFF];
-            //outuchar(c_port, last_lookup);
-
           p_data <: byterev(~lookup40w[(w[i] >> j) & 0xFF]);
           last_lookup = ~lookup40b[(w[i] >> j) & 0xFF];
           partout(p_data, 8, last_lookup);
@@ -93,16 +113,39 @@ void adat_transmit_port_until_ct_2x(chanend c_data, buffered out port:32 p_data,
 #endif
   unsigned last_lookup = 0;
   unsigned start;
+
+#ifdef ADAT_TX_USE_SHARED_BUFF
+  volatile unsigned * unsafe bufferPtr;
+#endif
+
   switch (smux)
   {
-    case 0: start = 0b00111111111100000000000000000000; break; // 3ff00000
+    case 0:
+    case 1: start = 0b00111111111100000000000000000000; break; // 3ff00000
     case 2: start = 0b11000000111100000000000000000000; break;
     case 4: break; // TODO
   }
   while (!testct(c_data)) {
     unsigned w[8];
+
+#ifdef ADAT_TX_USE_SHARED_BUFF
+    unsafe
+    {
+        /* Receive pointer to sample buffer over channel */
+        bufferPtr = (unsigned * unsafe) inuint(c_data);
+#pragma loop unroll
+        for(int i = 0; i< 8; i++)
+        {
+            w[i] = bufferPtr[i];
+        }
+        /* Handshake back to indicate done with buffer */
+        outuint(c_data, 0);
+    }
+#else
     w[0] = inuint(c_data);
     w[1] = inuint(c_data);
+#endif
+
 #ifdef adat_tx_port_SINEWAVE
     w[0] = sinewave[sinewave_i];
     w[1] = sinewave[sinewave_i];
@@ -138,13 +181,15 @@ void adat_transmit_port_until_ct_2x(chanend c_data, buffered out port:32 p_data,
     for (int i = 0; i < 8; i += 2) {
       unsigned next_lookup;
       if (i > 0) {
+#ifndef ADAT_TX_USE_SHARED_BUFF
         if (testct(c_data)) {
           return;
         }
 	    w[i] = inuint(c_data);
         w[i + 1] = inuint(c_data);
+#endif
 #ifdef adat_tx_port_SINEWAVE
-	w[i] = 0;
+	    w[i] = 0;
         w[i + 1] = 0;
 #endif
       }
@@ -158,11 +203,6 @@ void adat_transmit_port_until_ct_2x(chanend c_data, buffered out port:32 p_data,
       else
         next_lookup = lookup20[(w[i] >> 16) & 0xFF];
 
-      // used to be:
-      //outuintb(c_port, (next_lookup << 20) | (last_lookup & 0xFFFFF));
-      //outuchar(c_port, next_lookup >> 12);
-
-      //tmp = (next_lookup << 20) | (last_lookup & 0xFFFFF);
       p_data <: (next_lookup << 20) | (last_lookup & 0xFFFFF);
       partout(p_data, 8, (next_lookup >> 12));
       // Note: This is what's achieved by outuchar(c_port, next_lookup >> 12); in the original impl
@@ -206,18 +246,17 @@ void adat_transmit_port_until_ct_1x(chanend c_data, buffered out port:32 p_data,
 
 void adat_tx_port(chanend c_data, buffered out port:32 p_data)
 {
-  set_thread_fast_mode_on();
 
-  while (1) {
-    int multiplier = inuint(c_data);
-    int smux = inuint(c_data);
+  int multiplier = inuint(c_data);
+  int smux = inuint(c_data);
 
-    // prefilling the output port:
-    // 3/6/12 outputs and 8 inputs per frame = 0.375/0.75/1.5 outputs per input
-    for (int i = 0; i < 8; i++) {
-      inuint(c_data);
-    }
-    p_data <: byterev(0);
+  // prefilling the output port:
+  // 3/6/12 outputs and 8 inputs per frame = 0.375/0.75/1.5 outputs per input
+  
+  /* Wait for the other side to start up */
+  if(!testct(c_data))
+  {
+    p_data <: byterev(0); 
     p_data <: byterev(0);
     p_data <: byterev(0);
     p_data <: byterev(0);
@@ -228,6 +267,7 @@ void adat_tx_port(chanend c_data, buffered out port:32 p_data)
       case 256: adat_transmit_port_until_ct_1x(c_data, p_data, smux); break;
     }
 
-    chkct(c_data, XS1_CT_END);
   }
+  
+  chkct(c_data, XS1_CT_END);
 }
