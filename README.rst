@@ -1,12 +1,9 @@
 ADAT Lightpipe Digital Audio Interface
 ......................................
 
-:Latest release: 1.0.0alpha0
+:Latest release: 1.0.0alpha1
 :Maintainer: henkmuller
 :Description: ADAT Lightpipe Receiver and Transmitter
-
-
-
 
 
 Key Features
