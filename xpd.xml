@@ -1,6 +1,24 @@
 <?xml version="1.0" ?>
 <xpd>
     <components>
+        <component description = "ADAT Rx Example" type = "demoCode" scope = "General Use" path = "app_adat_rx_example" local = "false" id = "app_adat_rx_example" name = "ADAT Rx Example">
+            <board>XR-USB-AUDIO-2.0-MC</board>
+            <componentDependency repo = "git://github.com/xross/sc_adat.git">module_adat_rx</componentDependency>
+            <keyword>ADAT</keyword>
+            <keyword>optical</keyword>
+        </component>
+        <component description = "ADAT Tx Example" type = "demoCode" scope = "General Use" path = "app_adat_tx_direct_example" local = "false" id = "app_adat_tx_direct_example" name = "ADAT Tx Example">
+            <board>XR-USB-AUDIO-2.0-MC</board>
+            <componentDependency repo = "git://github.com/xross/sc_adat.git">module_adat_tx</componentDependency>
+            <keyword>ADAT</keyword>
+            <keyword>optical</keyword>
+        </component>
+        <component description = "ADAT Tx Example" type = "demoCode" scope = "General Use" path = "app_adat_tx_example" local = "false" id = "app_adat_tx_example" name = "ADAT Tx Example">
+            <board>XR-USB-AUDIO-2.0-MC</board>
+            <componentDependency repo = "git://github.com/xross/sc_adat.git">module_adat_tx</componentDependency>
+            <keyword>ADAT</keyword>
+            <keyword>optical</keyword>
+        </component>
         <component description = "ADAT Lightpipe Receiver" type = "demoCode" scope = "General Use" path = "module_adat_rx" local = "false" id = "module_adat_rx" name = "ADAT Lightpipe Receiver">
             <board>XR-USB-AUDIO-2.0-MC</board>
             <keyword>ADAT</keyword>
