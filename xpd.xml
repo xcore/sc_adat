@@ -1,6 +1,14 @@
 <?xml version="1.0" ?>
 <xpd>
     <components>
+        <component description = "ADAT Loopback Example" type = "demoCode" scope = "Example" path = "app_adat_loopback" local = "false" id = "app_adat_loopback" name = "ADAT Loopback Example">
+            <board>XR-USB-AUDIO-2.0-MC</board>
+            <componentDependency repo = "git://github.com/xross/sc_adat.git">module_adat_rx</componentDependency>
+            <componentDependency repo = "git://github.com/xross/sc_adat.git">module_adat_tx</componentDependency>
+            <keyword>ADAT</keyword>
+            <keyword>Optical</keyword>
+            <keyword>loopback</keyword>
+        </component>
         <component description = "ADAT Rx Example" type = "demoCode" scope = "General Use" path = "app_adat_rx_example" local = "false" id = "app_adat_rx_example" name = "ADAT Rx Example">
             <board>XR-USB-AUDIO-2.0-MC</board>
             <componentDependency repo = "git://github.com/xross/sc_adat.git">module_adat_rx</componentDependency>
@@ -34,6 +42,7 @@
     <location>git@github.com:xross/sc_adat.git</location>
     <name>sc_adat</name>
     <maintainer>henkmuller</maintainer>
+    <release parenthash = "04193666789ceaa9a43aa87b70d08ba5ac027196" version = "1.0.0alpha0"></release>
     <vendor>XMOS</vendor>
     <version_defines></version_defines>
     <xcore_repo>git://github.com/xcore/sc_adat.git</xcore_repo>

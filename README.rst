@@ -1,13 +1,12 @@
 ADAT Lightpipe Digital Audio Interface
 ......................................
 
-:Stable release:  unreleased (see `versioning <https://github.com/xcore/Community/wiki/Versioning>`_)
+:Latest release: 1.0.0alpha0
+:Maintainer: henkmuller
+:Description: ADAT Lightpipe Receiver and Transmitter
 
-:Status:  Feature complete
 
-:Maintainer:  https://github.com/henkmuller
 
-:Description:  Modules for receiving and transmitting ADAT streams
 
 
 Key Features
@@ -36,13 +35,13 @@ Known Issues
 
 * None
 
-Required Repositories
-=====================
-
-* xcommon git\@github.com:xcore/xcommon.git
-* xdoc git\@github.com:xcore/xdoc.git
-
 Support
 =======
 
 At the discretion of the maintainer.
+
+Required software (dependencies)
+================================
+
+  * None
+
