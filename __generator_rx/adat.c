@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
         if(strcmp(argv[i], "-t") == 0) {
             channel = 1; // test
         } else if(strcmp(argv[i], "-v") == 0) {
-            verbose = 1; 
+            verbose = 1;
         } else if(strcmp(argv[i], "-4") == 0) {
             freq = 44.1; // different frequency
             mask = 0x80402010;
@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
                     sampleNum++;
                 }
             }
-            
+
         }
         nextBitToTake += bitsInCompressed;
 

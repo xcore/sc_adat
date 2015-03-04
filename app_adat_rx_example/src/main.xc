@@ -43,7 +43,7 @@ int main(void) {
     par {
         receiveAdat(c);
         collectSamples(c);
-    }                                           
+    }
     return 0;
 }
 //::

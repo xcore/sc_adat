@@ -4,7 +4,7 @@
 // LICENSE.txt and at <http://github.xcore.com/>
 
 // GENERATED CODE - DO NOT EDIT
-// Comments are in the generator 
+// Comments are in the generator
 // Generated for devices with a reference clock of  99.937500 Mhz
 // If both 48000 and 44100 are to be supported, then
 // call adatReceiver48000 and 44100 in a while(1) loop
@@ -457,7 +457,7 @@ void adatReceiver48000(buffered in port:32 p, chanend oChan) {
 }
 
 // GENERATED CODE - DO NOT EDIT
-// Comments are in the generator 
+// Comments are in the generator
 // Generated for devices with a reference clock of  99.937500 Mhz
 // If both 48000 and 44100 are to be supported, then
 // call adatReceiver48000 and 44100 in a while(1) loop
