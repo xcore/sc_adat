@@ -3,27 +3,27 @@
     <components>
         <component description = "ADAT Loopback Example" type = "demoCode" scope = "Example" path = "app_adat_loopback" local = "false" id = "app_adat_loopback" name = "ADAT Loopback Example">
             <board>XR-USB-AUDIO-2.0-MC</board>
-            <componentDependency repo = "git://github.com/xross/sc_adat.git">module_adat_rx</componentDependency>
-            <componentDependency repo = "git://github.com/xross/sc_adat.git">module_adat_tx</componentDependency>
+            <componentDependency repo = "git://github.com/xcore/sc_adat.git">module_adat_rx</componentDependency>
+            <componentDependency repo = "git://github.com/xcore/sc_adat.git">module_adat_tx</componentDependency>
             <keyword>ADAT</keyword>
             <keyword>Optical</keyword>
             <keyword>loopback</keyword>
         </component>
         <component description = "ADAT Rx Example" type = "demoCode" scope = "General Use" path = "app_adat_rx_example" local = "false" id = "app_adat_rx_example" name = "ADAT Rx Example">
             <board>XR-USB-AUDIO-2.0-MC</board>
-            <componentDependency repo = "git://github.com/xross/sc_adat.git">module_adat_rx</componentDependency>
+            <componentDependency repo = "git://github.com/xcore/sc_adat.git">module_adat_rx</componentDependency>
             <keyword>ADAT</keyword>
             <keyword>optical</keyword>
         </component>
         <component description = "ADAT Tx Example" type = "demoCode" scope = "General Use" path = "app_adat_tx_direct_example" local = "false" id = "app_adat_tx_direct_example" name = "ADAT Tx Example">
             <board>XR-USB-AUDIO-2.0-MC</board>
-            <componentDependency repo = "git://github.com/xross/sc_adat.git">module_adat_tx</componentDependency>
+            <componentDependency repo = "git://github.com/xcore/sc_adat.git">module_adat_tx</componentDependency>
             <keyword>ADAT</keyword>
             <keyword>optical</keyword>
         </component>
         <component description = "ADAT Tx Example" type = "demoCode" scope = "General Use" path = "app_adat_tx_example" local = "false" id = "app_adat_tx_example" name = "ADAT Tx Example">
             <board>XR-USB-AUDIO-2.0-MC</board>
-            <componentDependency repo = "git://github.com/xross/sc_adat.git">module_adat_tx</componentDependency>
+            <componentDependency repo = "git://github.com/xcore/sc_adat.git">module_adat_tx</componentDependency>
             <keyword>ADAT</keyword>
             <keyword>optical</keyword>
         </component>
@@ -39,7 +39,7 @@
         </component>
     </components>
     <description>ADAT Lightpipe Receiver and Transmitter</description>
-    <location>git@github.com:xross/sc_adat.git</location>
+    <location>git@github.com:xcore/sc_adat.git</location>
     <name>sc_adat</name>
     <maintainer>henkmuller</maintainer>
     <release parenthash = "04193666789ceaa9a43aa87b70d08ba5ac027196" version = "1.0.0alpha0"></release>
