@@ -1,9 +1,8 @@
-<Add title here>
-================
+ADAT Lightpipe Receiver
+======================
 
-:scope: <Put one of Roadmap, Example, Early Development or General Use>
-:description: <Add one line here>
-:keywords: <Add comma separated list of keywords>
-:boards: <Add comma separated list of supported boards>
+:scope: General Use
+:description: ADAT Lightpipe Receiver
+:keywords: ADAT, Optical
+:boards: XR-USB-AUDIO-2.0-MC
 
-<Add description of software block>
