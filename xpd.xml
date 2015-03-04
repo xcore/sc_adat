@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<xpd>
+    <components>
+        <component description = "ADAT Lightpipe Receiver" type = "demoCode" scope = "General Use" path = "module_adat_rx" local = "false" id = "module_adat_rx" name = "ADAT Lightpipe Receiver">
+            <board>XR-USB-AUDIO-2.0-MC</board>
+            <keyword>ADAT</keyword>
+            <keyword>Optical</keyword>
+        </component>
+        <component description = "ADAT Lightpipe Transmitter" type = "demoCode" scope = "General Use" path = "module_adat_tx" local = "false" id = "module_adat_tx" name = "ADAT Lightpipe Transmitter">
+            <board>XR-USB-AUDIO-2.0-MC</board>
+            <keyword>ADAT</keyword>
+            <keyword>Optical</keyword>
+        </component>
+    </components>
+    <description>ADAT Lightpipe Receiver and Transmitter</description>
+    <location>git@github.com:xross/sc_adat.git</location>
+    <name>sc_adat</name>
+    <maintainer>henkmuller</maintainer>
+    <vendor>XMOS</vendor>
+    <version_defines></version_defines>
+    <xcore_repo>git://github.com/xcore/sc_adat.git</xcore_repo>
+    <xpd_version>1.0</xpd_version>
+</xpd>

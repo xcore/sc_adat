@@ -1,9 +1,9 @@
-<Add title here>
-================
+ADAT Rx Example
+===============
 
-:scope: <Put one of Roadmap, Example, Early Development or General Use>
-:description: <Add one line here>
-:keywords: <Add comma separated list of keywords>
-:boards: <Add comma separated list of supported boards>
+:scope: General Use
+:description: ADAT Rx Example
+:keywords: ADAT, optical
+:boards: XR-USB-AUDIO-2.0-MC
 
-<Add description of software block>
+Example of ADAT receiver usage
