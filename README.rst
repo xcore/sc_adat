@@ -1,5 +1,5 @@
-ADAT Digital Audio Interface
-............................
+ADAT Lightpipe Digital Audio Interface
+......................................
 
 :Stable release:  unreleased (see `versioning <https://github.com/xcore/Community/wiki/Versioning>`_)
 
