@@ -30,7 +30,7 @@
            }
         }
   why byte reverse? mixing word and byte channel outputs and channels are big endian
-*/ 
+*/
 
 /**Function that takes data over a channel end, and that outputs this in
  * ADAT format onto a 1-bit port. The 1-bit port should be clocked by the
@@ -45,7 +45,7 @@
  * The data is output onto a channel, which a separate process should
  * output to a port. This process should byte-reverse every word read over
  * the channel, and then output the reversed word to a buffered 1-bit port.
- * 
+ *
  * \param   c_data   Channel over which to send sample values to the transmitter
  *
  * \param   c_port   Channel on which to generate the ADAT stream

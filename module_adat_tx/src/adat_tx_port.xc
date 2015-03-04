@@ -39,7 +39,7 @@ void adat_transmit_port_until_ct_4x(chanend c_data, buffered out port:32 p_data,
   switch (smux) {
     case 0:
     case 1: start = 0b00001111111111111111111100000000; break;
-    case 2: 
+    case 2:
     case 4: start = 0b11110000000000001111111100000000; break;
   }
   while (!testct(c_data)) {
@@ -118,10 +118,10 @@ void adat_transmit_port_until_ct_2x(chanend c_data, buffered out port:32 p_data,
   volatile unsigned * unsafe bufferPtr;
 #endif
 
-  /* Sync is provided by 10 consecutive 0 bits followed by a 1 bit provide frame synchronization 
-  
+  /* Sync is provided by 10 consecutive 0 bits followed by a 1 bit provide frame synchronization
+
      4 user bits are also provided:
-    
+
      User bit 0 is designated for Timecode transport
      User bit 1 is designated for MIDI data transport
      User bit 2 is designated for S/Mux indication (96 kHz sample rate mode)
@@ -130,32 +130,32 @@ void adat_transmit_port_until_ct_2x(chanend c_data, buffered out port:32 p_data,
      Sync/user bits: 1uuuu10000000000 (LSB transmitted first)
 
      Note: NRZI encoding (0 no-trans, 1 trans), a 1 bit sent every 4 bits to force a transaction
-  
-     Sync and user bits - 16 bits output as 32 bits (2x oversampling) 
+
+     Sync and user bits - 16 bits output as 32 bits (2x oversampling)
 
   */
   switch (smux)
   {
     case 0:
-    case 1: 
-        /* 
+    case 1:
+        /*
             No SMUX:
-            User bits all 0: 1000010000000000            
+            User bits all 0: 1000010000000000
             NRZI:             0 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0
             2x oversample:   00111111111100000000000000000000
         */
         start = 0b00111111111100000000000000000000;
         break;
-    case 2: 
+    case 2:
     case 4:
-        /*  
+        /*
             Note: currently use same user bits for SMUX/2 and SMUX/4.
-            SMUX 
+            SMUX
             User bits, SMUX set high:  1 0010 1 0000000000
             NRZI:                       1 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0
             2x oversample              11000000111100000000000000000000
         */
-        start = 0b11000000111100000000000000000000; 
+        start = 0b11000000111100000000000000000000;
         break;
   }
   while (!testct(c_data)) {
@@ -271,11 +271,11 @@ void adat_tx_port(chanend c_data, buffered out port:32 p_data)
 
   // prefilling the output port:
   // 3/6/12 outputs and 8 inputs per frame = 0.375/0.75/1.5 outputs per input
-  
+
   /* Wait for the other side to start up */
   if(!testct(c_data))
   {
-    p_data <: byterev(0); 
+    p_data <: byterev(0);
     p_data <: byterev(0);
     p_data <: byterev(0);
     p_data <: byterev(0);
@@ -287,6 +287,6 @@ void adat_tx_port(chanend c_data, buffered out port:32 p_data)
     }
 
   }
-  
+
   chkct(c_data, XS1_CT_END);
 }
