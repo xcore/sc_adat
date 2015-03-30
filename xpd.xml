@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <xpd>
     <components>
-        <component description = "ADAT Loopback Example" type = "demoCode" docVersion = "1.0.0alpha1.c" scope = "Example" path = "app_adat_loopback" docPartNumber = "XM-007648-PC" local = "false" id = "app_adat_loopback" name = "ADAT Loopback Example">
+        <component description = "ADAT Loopback Example" type = "demoCode" scope = "Example" path = "app_adat_loopback" local = "false" id = "app_adat_loopback" name = "ADAT Loopback Example">
             <board>XR-USB-AUDIO-2.0-MC</board>
             <componentDependency repo = "git://github.com/xcore/sc_adat.git" version = "1.0.0">module_adat_tx</componentDependency>
             <componentDependency repo = "git://github.com/xcore/sc_adat.git" version = "1.0.0">module_adat_rx</componentDependency>
@@ -9,30 +9,30 @@
             <keyword>Optical</keyword>
             <keyword>loopback</keyword>
         </component>
-        <component description = "ADAT Rx Example" type = "demoCode" docVersion = "1.0.0alpha1.c" scope = "General Use" path = "app_adat_rx_example" docPartNumber = "XM-007649-PC" local = "false" id = "app_adat_rx_example" name = "ADAT Rx Example">
+        <component description = "ADAT Rx Example" type = "demoCode" scope = "General Use" path = "app_adat_rx_example" local = "false" id = "app_adat_rx_example" name = "ADAT Rx Example">
             <board>XR-USB-AUDIO-2.0-MC</board>
             <componentDependency repo = "git://github.com/xcore/sc_adat.git" version = "1.0.0">module_adat_rx</componentDependency>
             <keyword>ADAT</keyword>
             <keyword>optical</keyword>
         </component>
-        <component description = "ADAT Tx Example" type = "demoCode" docVersion = "1.0.0alpha1.c" scope = "General Use" path = "app_adat_tx_direct_example" docPartNumber = "XM-007650-PC" local = "false" id = "app_adat_tx_direct_example" name = "ADAT Tx Example">
+        <component description = "ADAT Tx Example" type = "demoCode" scope = "General Use" path = "app_adat_tx_direct_example" local = "false" id = "app_adat_tx_direct_example" name = "ADAT Tx Example">
             <board>XR-USB-AUDIO-2.0-MC</board>
             <componentDependency repo = "git://github.com/xcore/sc_adat.git" version = "1.0.0">module_adat_tx</componentDependency>
             <keyword>ADAT</keyword>
             <keyword>optical</keyword>
         </component>
-        <component description = "ADAT Tx Example" type = "demoCode" docVersion = "1.0.0alpha1.c" scope = "General Use" path = "app_adat_tx_example" docPartNumber = "XM-007651-PC" local = "false" id = "app_adat_tx_example" name = "ADAT Tx Example">
+        <component description = "ADAT Tx Example" type = "demoCode" scope = "General Use" path = "app_adat_tx_example" local = "false" id = "app_adat_tx_example" name = "ADAT Tx Example">
             <board>XR-USB-AUDIO-2.0-MC</board>
             <componentDependency repo = "git://github.com/xcore/sc_adat.git" version = "1.0.0">module_adat_tx</componentDependency>
             <keyword>ADAT</keyword>
             <keyword>optical</keyword>
         </component>
-        <component description = "ADAT Lightpipe Receiver" type = "demoCode" docVersion = "1.0.0alpha1.c" scope = "General Use" path = "module_adat_rx" docPartNumber = "XM-007652-PC" local = "false" id = "module_adat_rx" name = "ADAT Lightpipe Receiver">
+        <component description = "ADAT Lightpipe Receiver" type = "demoCode" scope = "General Use" path = "module_adat_rx" local = "false" id = "module_adat_rx" name = "ADAT Lightpipe Receiver">
             <board>XR-USB-AUDIO-2.0-MC</board>
             <keyword>ADAT</keyword>
             <keyword>Optical</keyword>
         </component>
-        <component description = "ADAT Lightpipe Transmitter" type = "demoCode" docVersion = "1.0.0alpha1.c" scope = "General Use" path = "module_adat_tx" docPartNumber = "XM-007653-PC" local = "false" id = "module_adat_tx" name = "ADAT Lightpipe Transmitter">
+        <component description = "ADAT Lightpipe Transmitter" type = "demoCode" scope = "General Use" path = "module_adat_tx" local = "false" id = "module_adat_tx" name = "ADAT Lightpipe Transmitter">
             <board>XR-USB-AUDIO-2.0-MC</board>
             <keyword>ADAT</keyword>
             <keyword>Optical</keyword>
@@ -45,6 +45,7 @@
     <partnumber>XM-007655-DH</partnumber>
     <release parenthash = "04193666789ceaa9a43aa87b70d08ba5ac027196" version = "1.0.0alpha0" githash = "eeee8bee7a79c9f90f777b94167d7dfddeb6f169"></release>
     <release parenthash = "3a968132b8a975591c2e0653a0b192cd9a23aff6" version = "1.0.0alpha1" githash = "8e6fbfa5f017da6fca29feeb7b8f00c482187bdf"></release>
+    <release parenthash = "57231470b38bac4746656fa19db75bf08de94113" version = "1.0.0rc0"></release>
     <subpartnumber>XM-007656-SM</subpartnumber>
     <vendor>XMOS</vendor>
     <version_defines></version_defines>
