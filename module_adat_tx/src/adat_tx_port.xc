@@ -42,10 +42,14 @@ void adat_transmit_port_until_ct_4x(chanend c_data, buffered out port:32 p_data,
     case 2:
     case 4: start = 0b11110000000000001111111100000000; break;
   }
-  while (!testct(c_data)) {
+  while (1) {
     unsigned w[8];
 
 #ifdef ADAT_TX_USE_SHARED_BUFF
+    if (testct(c_data)) {
+      return;  
+    }
+
     unsafe
     {
         /* Receive pointer to sample buffer over channel */
@@ -59,8 +63,13 @@ void adat_transmit_port_until_ct_4x(chanend c_data, buffered out port:32 p_data,
         outuint(c_data, 0);
     }
 #else
-    w[0] = inuint(c_data);
-    w[1] = inuint(c_data);
+#pragma loop unroll
+    for (int i = 0; i < 8; i++) {
+      if (testct(c_data)) {
+        return;
+      }
+      w[i] = inuint(c_data);
+    }
 #endif
 
     if (last_lookup & 0x80) {
@@ -76,16 +85,8 @@ void adat_transmit_port_until_ct_4x(chanend c_data, buffered out port:32 p_data,
 
     // output 8 times three 10-bit chunks - each lookup is 40 bits (4x oversampling)
 #pragma loop unroll
-    for (int i = 0; i < 8; i++) {
-#ifndef ADAT_TX_USE_SHARED_BUFF
-      if (i == 2 || i == 4 || i == 6) {
-        if (testct(c_data)) {
-          return;
-        }
-        w[i] = inuint(c_data);
-        w[i + 1] = inuint(c_data);
-      }
-#endif
+    for (int i = 0; i < 8; i++)
+    {
 #pragma loop unroll
       for (int j = 24; j >= 8; j -= 8) {
         if (last_lookup & 0x80) {
